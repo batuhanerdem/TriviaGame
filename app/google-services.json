@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "417817106887",
+    "project_id": "trivia-game-1905",
+    "storage_bucket": "trivia-game-1905.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417817106887:android:ab7ec9dff88148a827e1e2",
+        "android_client_info": {
+          "package_name": "com.batuhan.triviagame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417817106887-9o4iktfigngsrrcda97hbmlich365i88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM9ronJpS2u6FxKiiuyBMvalpt1MKUl34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417817106887-9o4iktfigngsrrcda97hbmlich365i88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
