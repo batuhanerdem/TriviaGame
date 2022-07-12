@@ -6,10 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-
-    @ColumnInfo(name = "userId",)
-    var id: Int = 0,
-
     @ColumnInfo(name = "userName")
     var name: String,
 

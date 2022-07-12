@@ -8,26 +8,71 @@
     tools:context=".ui.mainactivity.ProfileFragment">
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
+        android:id="@+id/tvNameHolder"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="10dp"
         android:text="Isim:"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tvName" />
 
     <TextView
-        android:id="@+id/textview3"
-        android:layout_width="match_parent"
+        android:id="@+id/tvAnsweredQuestionHolder"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Skor:"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:text="Cozulen soru sayisi:"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView2" />
+        app:layout_constraintTop_toBottomOf="@id/tvNameHolder" />
+
+    <TextView
+        android:id="@+id/tvTrueAnsweredHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:text="Dogru cozulen soru:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAnsweredQuestionHolder" />
+
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@id/tvAnsweredQuestion"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="deneme isim" />
+
+    <TextView
+        android:id="@+id/tvAnsweredQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/tvAnsweredQuestionHolder"
+        app:layout_constraintTop_toTopOf="@+id/tvAnsweredQuestionHolder"
+        tools:text="cozulen soru" />
+
+    <TextView
+        android:id="@+id/tvTrueAnsweredQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@id/tvAnsweredQuestion"
+        app:layout_constraintTop_toBottomOf="@id/tvAnsweredQuestion"
+        app:layout_constraintTop_toTopOf="@id/tvTrueAnsweredHolder"
+        tools:text="Dogrucozulen soru" />
 </androidx.constraintlayout.widget.ConstraintLayout>

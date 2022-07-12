@@ -5,21 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.User
-import kotlinx.coroutines.Dispatchers
+import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ProfileFragmentViewModel(private val repository: UserRepository) : ViewModel() {
+    var currentUser = MutableLiveData<User>()
 
-    var users: MutableLiveData<List<User>> = MutableLiveData()
-
-    fun getAllUsers() {
+    fun getCurrentUser() {
         viewModelScope.launch {
-            var result :List<User>? = null
-            withContext(Dispatchers.IO){
-                result = repository.getAllUsers()
-            }
-            users.value = result
+            currentUser.value = repository.getUserByEmail(LogInFragment.user.eMail)
         }
     }
 }

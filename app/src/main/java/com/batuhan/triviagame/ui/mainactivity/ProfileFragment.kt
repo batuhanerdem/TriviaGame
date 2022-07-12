@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentProfileBinding
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
@@ -20,7 +20,7 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -32,6 +32,17 @@ class ProfileFragment : Fragment() {
         val factory = ProfilfeFragmentViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(ProfileFragmentViewModel::class.java)
 
-        binding.textView2.text = LogInFragment.username
+        binding.apply {
+            LogInFragment.user.apply {
+                tvName.text = name
+                tvAnsweredQuestion.text = answeredQuestion.toString()
+                tvTrueAnsweredQuestion.text = trueAnswerNumber.toString()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getCurrentUser()
     }
 }

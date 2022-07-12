@@ -1,16 +1,17 @@
 package com.batuhan.triviagame.ui.loginactivity
 
 
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.batuhan.triviagame.db.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import kotlin.coroutines.coroutineContext
+import com.google.firebase.firestore.FirebaseFirestore
 
-class SignUpFragmentViewModel : ViewModel() {
+class SignUpFragmentViewModel(private val repository: UserRepository) : ViewModel() {
     private var isSignUp = MutableLiveData<Boolean>()
     private var exception = MutableLiveData<String>()
     private var auth = FirebaseAuth.getInstance()
+    private var db = FirebaseFirestore.getInstance()
 
     fun getIsSignUp(): MutableLiveData<Boolean> {
         return isSignUp
@@ -28,6 +29,7 @@ class SignUpFragmentViewModel : ViewModel() {
             auth.createUserWithEmailAndPassword(e_mail, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     isSignUp.value = true
+                    saveUserToFirestore(e_mail)
                 }
             }.addOnFailureListener { e ->
                 isSignUp.value = false
@@ -36,6 +38,14 @@ class SignUpFragmentViewModel : ViewModel() {
         }else{
             exception.value = "Lutfen bir deger giriniz"
         }
-
+    }
+    private fun saveUserToFirestore(e_mail: String){
+        val userMap = hashMapOf(
+            "name" to e_mail,
+            "email" to e_mail,
+            "answeredQuestion" to 0,
+            "trueAnswerNumber" to 0
+        )
+        db.collection("User").document(e_mail).set(userMap)
     }
 }

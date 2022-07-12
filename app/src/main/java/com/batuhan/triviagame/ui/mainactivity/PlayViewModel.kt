@@ -66,7 +66,7 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
         trueAnswerNumber: Int,
         answeredQuestionNumber: Int
     ) {
-        val currentUser = repository.getUserByEmail(LogInFragment.username)
+        val currentUser = repository.getUserByEmail(LogInFragment.user.eMail)
         val user = User(
             name = currentUser.name,
             eMail = currentUser.eMail,
@@ -79,7 +79,9 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
 
     fun updateUserQuestions(trueAnswerNumber: Int, answeredQuestionNumber: Int) {
         viewModelScope.launch {
-            updateUserTrueAnsweredQuestion(trueAnswerNumber,answeredQuestionNumber)
+            updateUserTrueAnsweredQuestion(trueAnswerNumber, answeredQuestionNumber)
         }
+        LogInFragment.user.trueAnswerNumber += trueAnswerNumber
+        LogInFragment.user.answeredQuestion += answeredQuestionNumber
     }
 }

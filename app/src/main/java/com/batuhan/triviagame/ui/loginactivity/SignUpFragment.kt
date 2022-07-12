@@ -11,25 +11,31 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentSignUpBinding
+import com.batuhan.triviagame.db.UserDAO
+import com.batuhan.triviagame.db.UserDatabase
+import com.batuhan.triviagame.db.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class SignUpFragment : Fragment() {
     private lateinit var viewModel: SignUpFragmentViewModel
     private lateinit var binding: FragmentSignUpBinding
-    private lateinit var auth: FirebaseAuth
-
+    private lateinit var factory: SignUpFragmentViewModelFactory
+    private lateinit var dao: UserDAO
+    private lateinit var repository: UserRepository
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+        binding = FragmentSignUpBinding.inflate( inflater,container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSignUpBinding.bind(view)
-        viewModel = ViewModelProvider(this).get(SignUpFragmentViewModel::class.java)
+        val dao = UserDatabase.getInstance(requireContext()).userDAO
+        val repository = UserRepository(dao)
+        factory = SignUpFragmentViewModelFactory(repository)
+        viewModel = ViewModelProvider(this,factory).get(SignUpFragmentViewModel::class.java)
 
         binding.apply {
             buttonKayitOlFragment.setOnClickListener {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -22,11 +23,9 @@ import com.google.firebase.auth.FirebaseAuth
 class LogInFragment : Fragment() {
     private lateinit var viewModel: LoginFragmentViewModel
     private lateinit var binding: FragmentLogInBinding
-    private lateinit var auth: FirebaseAuth
 
     companion object {
-        var username = ""
-        var highScore = 0
+        var user = User("","",0,0)
     }
 
     override fun onCreateView(
@@ -44,7 +43,6 @@ class LogInFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, factory).get(LoginFragmentViewModel::class.java)
         binding = FragmentLogInBinding.bind(view)
-        auth = FirebaseAuth.getInstance()
 
         binding.apply {
 
@@ -54,7 +52,7 @@ class LogInFragment : Fragment() {
             }
 
             buttonGirisYap.setOnClickListener {
-                username = editTextEmail.text.toString()
+                val username = editTextEmail.text.toString()
                 val password = editTextPassword.text.toString()
 
                 if (username == "delete") {
@@ -62,10 +60,6 @@ class LogInFragment : Fragment() {
                     Toast.makeText(context, "Database temizlendi", Toast.LENGTH_LONG)
                 }
                 viewModel.signIn(username, password)
-                //for testing
-                /*Intent(requireContext(), MainActivity::class.java).apply {
-                    startActivity(this)
-                }*/
             }
             viewModel.getIsSignIn().observe(viewLifecycleOwner, Observer {
                 if (it) {

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentPlayBinding
+import com.batuhan.triviagame.databinding.FragmentProfileBinding
 import com.batuhan.triviagame.db.UserDAO
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
@@ -32,12 +33,13 @@ class PlayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_play, container, false)
+        binding = FragmentPlayBinding.inflate(inflater, container, false);
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentPlayBinding.bind(view)
         dao = UserDatabase.getInstance(requireContext()).userDAO
         repository = UserRepository(dao)
         factory = PlayViewModelFactory(repository)
@@ -90,7 +92,7 @@ class PlayFragment : Fragment() {
                 if (viewModel.hasQuestions) {//this means we still have questions
                     setQuestions()
                 } else {
-                    viewModel.updateUserQuestions(trueAnswerNumber.value!!,answeredQuestionNumber)
+                    viewModel.updateUserQuestions(trueAnswerNumber.value!!, answeredQuestionNumber)
                     Intent(requireContext(), MainActivity::class.java).apply {
                         startActivity(this)
                     }
