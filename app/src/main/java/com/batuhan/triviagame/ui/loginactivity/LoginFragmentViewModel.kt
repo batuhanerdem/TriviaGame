@@ -6,14 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.User
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel() {
     var isSignIn = MutableLiveData<Boolean>()
     private var auth = FirebaseAuth.getInstance()
+    private var db = Firebase.firestore
 
     fun getIsSignIn(): MutableLiveData<Boolean> {
         return isSignIn
@@ -28,10 +28,12 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
                 if (task.isSuccessful) {
                     isSignIn.value = true
                     viewModelScope.launch {
-                       insertIfNotExist(e_mail)
+                        val currentUser = repository.getUserByEmail(e_mail)
+                        insertIfNotExist(e_mail)
+                        saveToFirestore(currentUser)
                     }
                 }
-            }.addOnFailureListener { e ->
+            }.addOnFailureListener {
                 isSignIn.value = false
             }
         } else {
@@ -39,7 +41,7 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
         }
     }
 
-    fun insertUser(user: User) {
+    private fun insertUser(user: User) {
         viewModelScope.launch {
             repository.insert(user)
         }
@@ -57,29 +59,29 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
         }
     }
 
-    suspend fun insertIfNotExist(e_mail :String){
+    suspend fun insertIfNotExist(e_mail: String) {
         val allUsers = repository.getAllUsers()
         var insertGate = true
 
         for (user in allUsers) {
             if (e_mail == user.name) {
-                println("ben kayitliyim yarram")
                 insertGate = false
             }
         }
         if (insertGate) {
-            println("insertgate =$insertGate")
-            insertUser(User(name = e_mail))
+            insertUser(User(name = e_mail, eMail = e_mail))
         }
     }
 
-    /*fun getAllUsers() {
-        viewModelScope.launch {
-            var result: List<User>?
-            withContext(Dispatchers.IO) {
-                result = repository.getAllUsers()
-                users.value = result
-            }
+    private fun saveToFirestore(user: User) {
+        user.apply {
+            val userMap = hashMapOf(
+                "Name" to name,
+                "Mail" to eMail,
+                "Answered Question" to answeredQuestion,
+                "True Answered Question" to trueAnswerNumber
+            )
+            db.collection("User").document(eMail).set(userMap)
         }
-    }*/
+    }
 }

@@ -24,6 +24,11 @@ class LogInFragment : Fragment() {
     private lateinit var binding: FragmentLogInBinding
     private lateinit var auth: FirebaseAuth
 
+    companion object {
+        var username = ""
+        var highScore = 0
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,11 +41,10 @@ class LogInFragment : Fragment() {
         val dao = UserDatabase.getInstance(requireContext()).userDAO
         val repository = UserRepository(dao)
         val factory = LoginFragmentViewModelFactory(repository)
-        var insertGate = true
+
         viewModel = ViewModelProvider(this, factory).get(LoginFragmentViewModel::class.java)
         binding = FragmentLogInBinding.bind(view)
         auth = FirebaseAuth.getInstance()
-
 
         binding.apply {
 
@@ -48,8 +52,9 @@ class LogInFragment : Fragment() {
                 val action = LogInFragmentDirections.actionLogInFragmentToSignUpFragment()
                 it.findNavController().navigate(action)
             }
+
             buttonGirisYap.setOnClickListener {
-                val username = editTextEmail.text.toString()
+                username = editTextEmail.text.toString()
                 val password = editTextPassword.text.toString()
 
                 if (username == "delete") {
@@ -65,7 +70,6 @@ class LogInFragment : Fragment() {
             viewModel.getIsSignIn().observe(viewLifecycleOwner, Observer {
                 if (it) {
                     Intent(requireContext(), MainActivity::class.java).apply {
-                        putExtra("username", editTextEmail.text.toString())
                         startActivity(this)
                     }
                 } else {

@@ -30,28 +30,21 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSignUpBinding.bind(view)
         viewModel = ViewModelProvider(this).get(SignUpFragmentViewModel::class.java)
-        auth = FirebaseAuth.getInstance()
 
         binding.apply {
             buttonKayitOlFragment.setOnClickListener {
-                viewModel.createAccount(
-                    auth,
-                    editTextEmail.text.toString(),
-                    editTextPassword.text.toString()
-                )
+                val email = editTextEmail.text.toString()
+                val password = editTextPassword.text.toString()
+                viewModel.createAccount(email, password)
+                viewModel.getException().observe(viewLifecycleOwner, Observer {
+                    Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                })
                 viewModel.getIsSignUp().observe(viewLifecycleOwner, Observer {
-                    if (viewModel.getIsSignUp().value!!) {
+                    if (it) {
                         Toast.makeText(context, "Basariyla kayit olundu", Toast.LENGTH_SHORT).show()
 
                         val action = SignUpFragmentDirections.actionSignUpFragmentToLogInFragment()
                         Navigation.findNavController(view).navigate(action)
-
-                    } else if (!viewModel.getIsSignUp().value!!) {
-                        Toast.makeText(
-                            requireContext(),
-                            viewModel.getException(),
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 })
             }

@@ -6,12 +6,16 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "userId")
+
+    @ColumnInfo(name = "userId",)
     var id: Int = 0,
 
     @ColumnInfo(name = "userName")
     var name: String,
+
+    @PrimaryKey
+    @ColumnInfo(name = "UserEmail")
+    var eMail: String,
 
     @ColumnInfo(name = "userAnsweredQuestion")
     var answeredQuestion: Int = 0,

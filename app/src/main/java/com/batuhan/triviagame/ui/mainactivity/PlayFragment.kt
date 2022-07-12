@@ -13,16 +13,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentPlayBinding
-import com.google.firebase.firestore.FirebaseFirestore
+import com.batuhan.triviagame.db.UserDAO
+import com.batuhan.triviagame.db.UserDatabase
+import com.batuhan.triviagame.db.UserRepository
 
 class PlayFragment : Fragment() {
     private lateinit var binding: FragmentPlayBinding
-    private lateinit var db: FirebaseFirestore
     private lateinit var viewModel: PlayViewModel
+    private lateinit var factory: PlayViewModelFactory
     private var selectedButton: Button? = null
     private var trueAnswer = "X"
-    private var uid = 1
+    private var questionUid = 1
     private lateinit var buttonList: List<Button>
+    private lateinit var dao: UserDAO
+    private lateinit var repository: UserRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,11 +37,13 @@ class PlayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(PlayViewModel::class.java)
         binding = FragmentPlayBinding.bind(view)
-        db = FirebaseFirestore.getInstance()
-        val point = MutableLiveData<Int>()
+        dao = UserDatabase.getInstance(requireContext()).userDAO
+        repository = UserRepository(dao)
+        factory = PlayViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, factory).get(PlayViewModel::class.java)
+        val trueAnswerNumber = MutableLiveData<Int>()
+        var answeredQuestionNumber = 0
         buttonList = listOf(
             binding.btnAnswer1,
             binding.btnAnswer2,
@@ -45,9 +51,9 @@ class PlayFragment : Fragment() {
             binding.btnAnswer4
         )
 
-        viewModel.getDatabase(db, requireContext(), uid)//sets database
-        point.value = 0
-        point.observe(viewLifecycleOwner, Observer {
+        viewModel.getDatabase(requireContext(), questionUid)//sets database
+        trueAnswerNumber.value = 0
+        trueAnswerNumber.observe(viewLifecycleOwner, Observer {
             binding.tvPoint.text = it.toString()
         })
         setQuestions()// guestions from database
@@ -62,10 +68,11 @@ class PlayFragment : Fragment() {
                 selectedButton?.let {
                     disableButtons()
                     btnNextQuestion.text = "SONRAKI SORU"
+                    answeredQuestionNumber++
 
                     if (it.text.toString() == trueAnswer) {
                         it.trueAnswer()
-                        point.value = point.value!!.plus(1)
+                        trueAnswerNumber.value = trueAnswerNumber.value!!.plus(1)
                     } else {
                         it.wrongAnswer()
                         showTrueAnswer()
@@ -79,10 +86,11 @@ class PlayFragment : Fragment() {
                 resetButtons()
                 enableButtons()
                 selectedButton = null
-                viewModel.getDatabase(db, requireContext(), ++uid)
+                viewModel.getDatabase(requireContext(), ++questionUid)
                 if (viewModel.hasQuestions) {//this means we still have questions
                     setQuestions()
                 } else {
+                    viewModel.updateUserQuestions(trueAnswerNumber.value!!,answeredQuestionNumber)
                     Intent(requireContext(), MainActivity::class.java).apply {
                         startActivity(this)
                     }
@@ -100,7 +108,7 @@ class PlayFragment : Fragment() {
                 tvQuestion.text = it.text
                 trueAnswer = it.trueAnswer
                 btnNextQuestion.text = "PAS GEC"
-                for(button in buttonList){
+                for (button in buttonList) {
                     button.text = answerList[i++]
                 }
             }

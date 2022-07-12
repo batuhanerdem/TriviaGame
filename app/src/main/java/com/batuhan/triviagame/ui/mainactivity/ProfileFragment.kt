@@ -10,17 +10,11 @@ import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentProfileBinding
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
+import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 
 class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileFragmentViewModel
     private lateinit var binding: FragmentProfileBinding
-    private var username = ""
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            username = it.getString("name").toString()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +32,6 @@ class ProfileFragment : Fragment() {
         val factory = ProfilfeFragmentViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(ProfileFragmentViewModel::class.java)
 
-        binding.textView2.text = username
+        binding.textView2.text = LogInFragment.username
     }
 }

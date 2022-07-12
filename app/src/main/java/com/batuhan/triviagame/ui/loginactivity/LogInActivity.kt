@@ -13,7 +13,5 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val dao = UserDatabase.getInstance(applicationContext).userDAO
-        val repository = UserRepository(dao)
     }
 }

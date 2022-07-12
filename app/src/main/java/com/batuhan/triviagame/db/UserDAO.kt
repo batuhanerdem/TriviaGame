@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.db
 
+import android.provider.ContactsContract
 import androidx.room.*
 import com.batuhan.triviagame.model.User
 
@@ -20,4 +21,7 @@ interface UserDAO {
 
     @Query("SELECT * FROM user")
     suspend fun getAllUsers(): List<User>
+
+    @Query("SELECT * FROM User WHERE userEmail =:eMail")
+    suspend fun getUserByEmail(eMail: String): User
 }

@@ -8,14 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.Questions
 import com.batuhan.triviagame.model.User
+import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
-class PlayViewModel() : ViewModel() {
+class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     private var allDocuments = arrayListOf<DocumentSnapshot>()
     private var question = MutableLiveData<Questions>()
     var hasQuestions = true
+    private var db = FirebaseFirestore.getInstance()
 
     //private var questionList = arrayListOf<Questions>()
 
@@ -27,7 +29,7 @@ class PlayViewModel() : ViewModel() {
         return allDocuments
     }
 
-    fun getDatabase(db: FirebaseFirestore, context: Context, uid: Int) {
+    fun getDatabase(context: Context, uid: Int) {
 
         db.collection("Play").addSnapshotListener { snapshot, exception ->
 
@@ -57,6 +59,27 @@ class PlayViewModel() : ViewModel() {
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun updateUserTrueAnsweredQuestion(
+        trueAnswerNumber: Int,
+        answeredQuestionNumber: Int
+    ) {
+        val currentUser = repository.getUserByEmail(LogInFragment.username)
+        val user = User(
+            name = currentUser.name,
+            eMail = currentUser.eMail,
+            trueAnswerNumber = currentUser.trueAnswerNumber.plus(trueAnswerNumber),
+            answeredQuestion = currentUser.answeredQuestion.plus(answeredQuestionNumber)
+        )
+        repository.update(user)
+        db.collection("User").document(currentUser.eMail).set(user)
+    }
+
+    fun updateUserQuestions(trueAnswerNumber: Int, answeredQuestionNumber: Int) {
+        viewModelScope.launch {
+            updateUserTrueAnsweredQuestion(trueAnswerNumber,answeredQuestionNumber)
         }
     }
 }

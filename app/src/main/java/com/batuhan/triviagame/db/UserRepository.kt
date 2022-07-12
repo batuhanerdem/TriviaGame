@@ -7,7 +7,8 @@ class UserRepository(private val dao: UserDAO) {
     suspend fun insert(user: User) {
         dao.insertUser(user)
     }
-    suspend fun getAllUsers():List<User>{
+
+    suspend fun getAllUsers(): List<User> {
         return dao.getAllUsers()
     }
 
@@ -21,5 +22,9 @@ class UserRepository(private val dao: UserDAO) {
 
     suspend fun clearDatabase() {
         dao.clearDB()
+    }
+
+    suspend fun getUserByEmail(e_mail: String): User {
+        return dao.getUserByEmail(e_mail)
     }
 }

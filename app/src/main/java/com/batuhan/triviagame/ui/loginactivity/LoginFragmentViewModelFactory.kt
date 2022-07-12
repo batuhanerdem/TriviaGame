@@ -10,6 +10,6 @@ class LoginFragmentViewModelFactory(private val repository: UserRepository):View
         if(modelClass.isAssignableFrom(LoginFragmentViewModel::class.java)){
             return LoginFragmentViewModel(repository) as T
         }
-        throw IllegalArgumentException("Unkown Viewmodel class")
+        throw IllegalArgumentException("Unknown Viewmodel class")
     }
 }
