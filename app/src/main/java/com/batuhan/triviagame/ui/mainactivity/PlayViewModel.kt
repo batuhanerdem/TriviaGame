@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.batuhan.triviagame.R
 import com.batuhan.triviagame.db.UserRepository
+import com.batuhan.triviagame.model.Buttons
 import com.batuhan.triviagame.model.Questions
 import com.batuhan.triviagame.model.User
 import com.batuhan.triviagame.ui.loginactivity.LogInFragment
@@ -14,25 +16,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class PlayViewModel(private val repository: UserRepository) : ViewModel() {
-    private var allDocuments = arrayListOf<DocumentSnapshot>()
     private var question = MutableLiveData<Questions>()
     var hasQuestions = true
     private var db = FirebaseFirestore.getInstance()
+    
 
-    //private var questionList = arrayListOf<Questions>()
+
 
     fun getQuestions(): MutableLiveData<Questions> {
         return question
     }
 
-    fun getAllDocuments(): ArrayList<DocumentSnapshot> {
-        return allDocuments
-    }
-
     fun getDatabase(context: Context, uid: Int) {
-
         db.collection("Play").addSnapshotListener { snapshot, exception ->
-
             if (exception != null) {
                 Toast.makeText(context, exception.localizedMessage, Toast.LENGTH_LONG).show()
             } else {
@@ -62,25 +58,25 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    private suspend fun updateUserTrueAnsweredQuestion(
+    // buraya bak
+    fun updateUserTestValues(
         trueAnswerNumber: Int,
         answeredQuestionNumber: Int
     ) {
-        val currentUser = repository.getUserByEmail(LogInFragment.user.eMail)
-        val user = User(
-            name = currentUser.name,
-            eMail = currentUser.eMail,
-            trueAnswerNumber = currentUser.trueAnswerNumber.plus(trueAnswerNumber),
-            answeredQuestion = currentUser.answeredQuestion.plus(answeredQuestionNumber)
-        )
-        repository.update(user)
-        db.collection("User").document(currentUser.eMail).set(user)
-    }
-
-    fun updateUserQuestions(trueAnswerNumber: Int, answeredQuestionNumber: Int) {
         viewModelScope.launch {
-            updateUserTrueAnsweredQuestion(trueAnswerNumber, answeredQuestionNumber)
+            val currentUser = repository.getUserByEmail(LogInFragment.user.eMail)//get user
+            currentUser.apply {
+                val user = User(
+                    name,
+                    eMail,
+                    this.answeredQuestion.plus(answeredQuestionNumber),
+                    this.trueAnswerNumber.plus(trueAnswerNumber)
+                )
+                repository.update(user)// update user with new values
+                db.collection("User").document(eMail).set(user)//update user in firebase
+            }
         }
+        //update user values in static variables
         LogInFragment.user.trueAnswerNumber += trueAnswerNumber
         LogInFragment.user.answeredQuestion += answeredQuestionNumber
     }

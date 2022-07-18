@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentPlayBinding
-import com.batuhan.triviagame.databinding.FragmentProfileBinding
 import com.batuhan.triviagame.db.UserDAO
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
@@ -70,7 +69,10 @@ class PlayFragment : Fragment() {
                 selectedButton?.let {
                     disableButtons()
                     btnNextQuestion.text = "SONRAKI SORU"
-                    answeredQuestionNumber++
+                    answeredQuestionNumber++//viewmodel
+
+                            //modele enum class
+                            //kalani viewmodel
 
                     if (it.text.toString() == trueAnswer) {
                         it.trueAnswer()
@@ -92,7 +94,7 @@ class PlayFragment : Fragment() {
                 if (viewModel.hasQuestions) {//this means we still have questions
                     setQuestions()
                 } else {
-                    viewModel.updateUserQuestions(trueAnswerNumber.value!!, answeredQuestionNumber)
+                    viewModel.updateUserTestValues(trueAnswerNumber.value!!, answeredQuestionNumber)
                     Intent(requireContext(), MainActivity::class.java).apply {
                         startActivity(this)
                     }
