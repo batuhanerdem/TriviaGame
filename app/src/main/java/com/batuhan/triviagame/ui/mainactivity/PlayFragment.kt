@@ -16,13 +16,12 @@ import com.batuhan.triviagame.databinding.FragmentPlayBinding
 import com.batuhan.triviagame.db.UserDAO
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
+import com.batuhan.triviagame.model.Buttons
 
 class PlayFragment : Fragment() {
     private lateinit var binding: FragmentPlayBinding
     private lateinit var viewModel: PlayViewModel
     private lateinit var factory: PlayViewModelFactory
-    private var selectedButton: Button? = null
-    private var trueAnswer = "X"
     private var questionUid = 1
     private lateinit var buttonList: List<Button>
     private lateinit var dao: UserDAO
@@ -43,26 +42,14 @@ class PlayFragment : Fragment() {
         repository = UserRepository(dao)
         factory = PlayViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(PlayViewModel::class.java)
-        val trueAnswerNumber = MutableLiveData<Int>()
-        var answeredQuestionNumber = 0
         buttonList = listOf(
             binding.btnAnswer1,
             binding.btnAnswer2,
             binding.btnAnswer3,
             binding.btnAnswer4
         )
-
-        viewModel.getDatabase(requireContext(), questionUid)//sets database
-        trueAnswerNumber.value = 0
-        trueAnswerNumber.observe(viewLifecycleOwner, Observer {
-            binding.tvPoint.text = it.toString()
-        })
         setQuestions()// guestions from database
-
-        //buttons are gonna change their colors according to if they are the true answer or not
-        for (button in buttonList) {
-            button.changeBackGround()
-        }
+        viewModel.getDatabase(requireContext(), questionUid)//sets database
 
         binding.apply {
             btnAnswerIt.setOnClickListener {
@@ -71,12 +58,9 @@ class PlayFragment : Fragment() {
                     btnNextQuestion.text = "SONRAKI SORU"
                     answeredQuestionNumber++//viewmodel
 
-                            //modele enum class
-                            //kalani viewmodel
 
                     if (it.text.toString() == trueAnswer) {
                         it.trueAnswer()
-                        trueAnswerNumber.value = trueAnswerNumber.value!!.plus(1)
                     } else {
                         it.wrongAnswer()
                         showTrueAnswer()
@@ -86,15 +70,18 @@ class PlayFragment : Fragment() {
                 }
             }
 
+
+
+
+
+
             btnNextQuestion.setOnClickListener {
-                resetButtons()
-                enableButtons()
                 selectedButton = null
                 viewModel.getDatabase(requireContext(), ++questionUid)
                 if (viewModel.hasQuestions) {//this means we still have questions
                     setQuestions()
                 } else {
-                    viewModel.updateUserTestValues(trueAnswerNumber.value!!, answeredQuestionNumber)
+                    //viewModel.updateUserTestValues(trueAnswerNumber.value!!, answeredQuestionNumber)
                     Intent(requireContext(), MainActivity::class.java).apply {
                         startActivity(this)
                     }
@@ -105,70 +92,63 @@ class PlayFragment : Fragment() {
 
     private fun setQuestions() {
         viewModel.getQuestions().observe(viewLifecycleOwner, Observer {
-            val answerList = it.answers
-            var i = 0
-
+            viewModel.resetButtons()
             binding.apply {
                 tvQuestion.text = it.text
-                trueAnswer = it.trueAnswer
-                btnNextQuestion.text = "PAS GEC"
-                for (button in buttonList) {
-                    button.text = answerList[i++]
+                for ((index, button) in buttonList.withIndex()) {
+                    button.text = it.answers[index]
                 }
             }
         })
     }
 
-    private fun showTrueAnswer() {
-        val trueAnswerDraw = resources.getDrawable(R.drawable.true_answer_button_background)
-        for (button in buttonList) {
-            if (button.text.toString() == trueAnswer) {
-                button.background = trueAnswerDraw
+    private fun setAnswers() {
+        viewModel.answerButtons.observe(viewLifecycleOwner, Observer {
+            binding.apply {
+                it.forEachIndexed { index, buttons ->
+                    buttonList[index].setTypeTo(buttons)
+                }
+            }
+        })
+    }
+
+    private fun setupOnClickListeners() {
+        buttonList.forEachIndexed { index, button ->
+            button.setOnClickListener {
+                viewModel.selectAnswer(index)
+            }
+        }
+        binding.apply {
+            btnAnswerIt.setOnClickListener {
+                val selectedIndex = viewModel.indexOfSelectedButton()
+                val trueAnswerIndex = viewModel.trueAnswerIndex()
+                trueAnswerIndex ?: return@setOnClickListener
+                selectedIndex ?: return@setOnClickListener
+
+                disableButtons()
+                //set the backgrounds
+                viewModel.answerButtons.value?.set(trueAnswerIndex, Buttons.CORRECT)
+
+                if(selectedIndex!=)
             }
         }
     }
 
-    private fun resetButtons() {
-        val notClicked = resources.getDrawable(R.drawable.button_background)
-        for (button in buttonList) {
-            button.background = notClicked
-        }
-    }
 
-    private fun enableButtons() {
-        val buttonListExtended = buttonList.toMutableList()
-        buttonListExtended.add(binding.btnAnswerIt)
-        for (button in buttonListExtended) {
-            button.isEnabled = true
+    private fun Button.setTypeTo(buttons: Buttons) {
+        this.background = when (buttons) {
+            Buttons.SELECTED -> resources.getDrawable(R.drawable.clicked_button_background)
+            Buttons.UNSELECTED -> resources.getDrawable(R.drawable.button_background)
+            Buttons.CORRECT -> resources.getDrawable(R.drawable.true_answer_button_background)
+            Buttons.WRONG -> resources.getDrawable(R.drawable.wrong_answer_button_background)
         }
     }
 
     private fun disableButtons() {
-        val buttonListExtended = buttonList.toMutableList()
-        buttonListExtended.add(binding.btnAnswerIt)
-        for (button in buttonListExtended) {
-            button.isEnabled = false
+        buttonList.forEach {
+            it.isEnabled = false
         }
-    }
-
-    private fun Button.changeBackGround() {
-        this.setOnClickListener {
-            resetButtons()
-            val clicked = resources.getDrawable(R.drawable.clicked_button_background)
-            this.background = clicked
-            selectedButton = this
-        }
-    }
-
-    private fun Button.trueAnswer() {
-        resetButtons()
-        val trueAnswerDraw = resources.getDrawable(R.drawable.true_answer_button_background)
-        this.background = trueAnswerDraw
-    }
-
-    private fun Button.wrongAnswer() {
-        resetButtons()
-        val wrongAnswerDraw = resources.getDrawable(R.drawable.wrong_answer_button_background)
-        this.background = wrongAnswerDraw
+        binding.btnAnswerIt.isEnabled = false
     }
 }
+

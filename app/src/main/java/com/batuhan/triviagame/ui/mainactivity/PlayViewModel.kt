@@ -2,6 +2,7 @@ package com.batuhan.triviagame.ui.mainactivity
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,14 +15,19 @@ import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+import java.util.function.UnaryOperator
 
 class PlayViewModel(private val repository: UserRepository) : ViewModel() {
+    private var trueAnswerNumber = 0
+    private var answeredQuestionNumber = 0
+
     private var question = MutableLiveData<Questions>()
     var hasQuestions = true
     private var db = FirebaseFirestore.getInstance()
-    
 
-
+    private var _answerButtons = MutableLiveData<MutableList<Buttons>>()
+    val answerButtons: LiveData<MutableList<Buttons>>
+        get() = _answerButtons
 
     fun getQuestions(): MutableLiveData<Questions> {
         return question
@@ -80,4 +86,25 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
         LogInFragment.user.trueAnswerNumber += trueAnswerNumber
         LogInFragment.user.answeredQuestion += answeredQuestionNumber
     }
+
+    fun resetButtons() {
+        _answerButtons.value?.clear() ?: run {
+            _answerButtons.value = mutableListOf()
+        }
+        for (i in 0..3) {
+            _answerButtons.value!!.add(Buttons.UNSELECTED)
+        }
+    }
+
+    fun selectAnswer(index: Int) {
+        _answerButtons.value?.replaceAll {
+            if (it == Buttons.SELECTED) Buttons.UNSELECTED
+            it
+        }
+    }
+
+    fun indexOfSelectedButton() = answerButtons.value?.indexOf(Buttons.SELECTED).takeIf { it != -1 }
+
+    fun trueAnswerIndex() =
+        getQuestions().value?.answers?.indexOf(getQuestions().value?.trueAnswer).takeIf { it != -1 }
 }
