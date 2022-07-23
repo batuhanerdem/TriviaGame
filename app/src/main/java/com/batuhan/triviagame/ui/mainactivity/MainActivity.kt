@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.batuhan.triviagame.R
@@ -21,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val fragmentManager = supportFragmentManager
-        val navHostFragment = fragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
+        val navHostFragment =
+            fragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
 
         navController = navHostFragment.navController
         setupWithNavController(binding.bottomNavigationView, navController)
@@ -34,18 +36,8 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener() {
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val playFragment = PlayFragment()
-                fragmentTransaction.replace(R.id.fragmentContainerView2, playFragment).commit()
+                fragmentTransaction.add(R.id.fragmentContainerView2, playFragment).commit()
             }
-            /*bottomNavigationView.setOnItemSelectedListener {
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                when (it.itemId) {
-                    R.id.profileItem -> fragmentTransaction.replace(containerId, profileFragment)
-                        .commit()
-                    R.id.settingsItem -> fragmentTransaction.replace(containerId, settingsFragment)
-                        .commit()
-                }
-                return@setOnItemSelectedListener true
-            }*/
         }
     }
 }

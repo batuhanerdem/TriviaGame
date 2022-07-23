@@ -1,12 +1,10 @@
 package com.batuhan.triviagame.ui.mainactivity
 
-import android.content.Context
-import android.widget.Toast
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batuhan.triviagame.R
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.Buttons
 import com.batuhan.triviagame.model.Questions
@@ -15,72 +13,62 @@ import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
-import java.util.function.UnaryOperator
 
 class PlayViewModel(private val repository: UserRepository) : ViewModel() {
-    private var trueAnswerNumber = 0
-    private var answeredQuestionNumber = 0
+    var trueAnswerNumber = 0
+    var answeredQuestionNumber = 0
+    var soruIndex = 0
+    private var allQuestions = mutableListOf<Questions>()
 
     private var question = MutableLiveData<Questions>()
-    var hasQuestions = true
     private var db = FirebaseFirestore.getInstance()
 
-    private var _answerButtons = MutableLiveData<MutableList<Buttons>>()
+    private var _answerButtons = MutableLiveData<MutableList<Buttons>>(mutableListOf())
     val answerButtons: LiveData<MutableList<Buttons>>
         get() = _answerButtons
 
-    fun getQuestions(): MutableLiveData<Questions> {
+    fun getQuestions(): LiveData<Questions> {
         return question
     }
 
-    fun getDatabase(context: Context, uid: Int) {
-        db.collection("Play").addSnapshotListener { snapshot, exception ->
-            if (exception != null) {
-                Toast.makeText(context, exception.localizedMessage, Toast.LENGTH_LONG).show()
-            } else {
-                if (snapshot != null) {
-                    if (!snapshot.isEmpty) {
-                        val allDocuments = snapshot.documents as ArrayList<DocumentSnapshot>
-                        if (uid >= allDocuments.size) {
-                            hasQuestions = false
-                        }
-                        for (document in allDocuments) {
-                            if (document.get("Uid") == uid.toLong()) {
-                                val text = document.get("Question") as String
-                                val answerA = document.get("AnswerA") as String
-                                val answerB = document.get("AnswerB") as String
-                                val answerC = document.get("AnswerC") as String
-                                val answerD = document.get("AnswerD") as String
-                                val trueAnswer = document.get("TrueAnswer") as String
-                                val uuid = document.get("Uid") as Long
-                                val answerList = listOf(answerA, answerB, answerC, answerD)
-                                question.value =
-                                    Questions(text, answerList, trueAnswer, uuid.toInt())
-                            }
-                        }
+    fun getDatabase() {
+        db.collection("Play").addSnapshotListener { snapshot, e ->
+            if (e == null) {
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val allDocuments = snapshot.documents as ArrayList<DocumentSnapshot>
+
+                    for (index in 0..9) {
+                        val text = allDocuments[index].get("Question") as String
+                        val answerA = allDocuments[index].get("AnswerA") as String
+                        val answerB = allDocuments[index].get("AnswerB") as String
+                        val answerC = allDocuments[index].get("AnswerC") as String
+                        val answerD = allDocuments[index].get("AnswerD") as String
+                        val trueAnswer = allDocuments[index].get("TrueAnswer") as String
+                        val uuid = allDocuments[index].get("Uid") as Long
+                        val answerList = listOf(answerA, answerB, answerC, answerD)
+                        allQuestions.add(
+                            Questions(text, answerList, trueAnswer, uuid.toInt())
+                        )
                     }
+                    nextQuestion()
                 }
             }
         }
     }
 
     // buraya bak
-    fun updateUserTestValues(
-        trueAnswerNumber: Int,
-        answeredQuestionNumber: Int
-    ) {
+    fun updateUserTestValues() {
         viewModelScope.launch {
             val currentUser = repository.getUserByEmail(LogInFragment.user.eMail)//get user
-            currentUser.apply {
-                val user = User(
-                    name,
-                    eMail,
-                    this.answeredQuestion.plus(answeredQuestionNumber),
-                    this.trueAnswerNumber.plus(trueAnswerNumber)
-                )
-                repository.update(user)// update user with new values
-                db.collection("User").document(eMail).set(user)//update user in firebase
-            }
+
+            val user = User(
+                currentUser.name,
+                currentUser.eMail,
+                currentUser.answeredQuestion + answeredQuestionNumber,
+                currentUser.trueAnswerNumber + trueAnswerNumber
+            )
+            repository.update(user)// update user with new values
+            db.collection("User").document(currentUser.eMail).set(user)//update user in firebase
         }
         //update user values in static variables
         LogInFragment.user.trueAnswerNumber += trueAnswerNumber
@@ -88,23 +76,37 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     fun resetButtons() {
-        _answerButtons.value?.clear() ?: run {
-            _answerButtons.value = mutableListOf()
-        }
+        Log.d("allah", "reset")
+        _answerButtons.value?.clear()
         for (i in 0..3) {
-            _answerButtons.value!!.add(Buttons.UNSELECTED)
+            _answerButtons.value?.add(Buttons.UNSELECTED)
         }
+        notifyAnswerList()
     }
 
     fun selectAnswer(index: Int) {
         _answerButtons.value?.replaceAll {
             if (it == Buttons.SELECTED) Buttons.UNSELECTED
-            it
+            else it
         }
+        _answerButtons.value?.set(index, Buttons.SELECTED)
+        notifyAnswerList()
     }
 
-    fun indexOfSelectedButton() = answerButtons.value?.indexOf(Buttons.SELECTED).takeIf { it != -1 }
+    fun selectedAnswerIndex() =
+        answerButtons.value?.indexOf(Buttons.SELECTED).takeIf { it != -1 }
 
     fun trueAnswerIndex() =
-        getQuestions().value?.answers?.indexOf(getQuestions().value?.trueAnswer).takeIf { it != -1 }
+        getQuestions().value?.answers?.indexOf(getQuestions().value?.trueAnswer)
+            .takeIf { it != -1 }
+
+    fun nextQuestion() {
+        question.value = allQuestions[soruIndex]
+    }
+
+    fun isLastQuestion() = soruIndex == allQuestions.size - 1
+
+    fun notifyAnswerList() {
+        _answerButtons.value = _answerButtons.value
+    }
 }

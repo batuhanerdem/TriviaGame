@@ -2,15 +2,17 @@ package com.batuhan.triviagame.ui.mainactivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentPlayBinding
 import com.batuhan.triviagame.db.UserDAO
@@ -22,7 +24,6 @@ class PlayFragment : Fragment() {
     private lateinit var binding: FragmentPlayBinding
     private lateinit var viewModel: PlayViewModel
     private lateinit var factory: PlayViewModelFactory
-    private var questionUid = 1
     private lateinit var buttonList: List<Button>
     private lateinit var dao: UserDAO
     private lateinit var repository: UserRepository
@@ -49,50 +50,16 @@ class PlayFragment : Fragment() {
             binding.btnAnswer4
         )
         setQuestions()// guestions from database
-        viewModel.getDatabase(requireContext(), questionUid)//sets database
-
-        binding.apply {
-            btnAnswerIt.setOnClickListener {
-                selectedButton?.let {
-                    disableButtons()
-                    btnNextQuestion.text = "SONRAKI SORU"
-                    answeredQuestionNumber++//viewmodel
-
-
-                    if (it.text.toString() == trueAnswer) {
-                        it.trueAnswer()
-                    } else {
-                        it.wrongAnswer()
-                        showTrueAnswer()
-                    }
-                } ?: run {
-                    Toast.makeText(requireContext(), "Lutfen bir sik seciniz", Toast.LENGTH_SHORT)
-                }
-            }
-
-
-
-
-
-
-            btnNextQuestion.setOnClickListener {
-                selectedButton = null
-                viewModel.getDatabase(requireContext(), ++questionUid)
-                if (viewModel.hasQuestions) {//this means we still have questions
-                    setQuestions()
-                } else {
-                    //viewModel.updateUserTestValues(trueAnswerNumber.value!!, answeredQuestionNumber)
-                    Intent(requireContext(), MainActivity::class.java).apply {
-                        startActivity(this)
-                    }
-                }
-            }
-        }
+        setAnswers()
+        viewModel.getDatabase()//sets database
+        setupOnClickListeners()
     }
 
     private fun setQuestions() {
         viewModel.getQuestions().observe(viewLifecycleOwner, Observer {
             viewModel.resetButtons()
+            Log.d("allah", viewModel.answerButtons.value.toString())
+            enableButtons()
             binding.apply {
                 tvQuestion.text = it.text
                 for ((index, button) in buttonList.withIndex()) {
@@ -104,10 +71,8 @@ class PlayFragment : Fragment() {
 
     private fun setAnswers() {
         viewModel.answerButtons.observe(viewLifecycleOwner, Observer {
-            binding.apply {
-                it.forEachIndexed { index, buttons ->
-                    buttonList[index].setTypeTo(buttons)
-                }
+            it.forEachIndexed { index, button ->
+                buttonList[index].setTypeTo(button)
             }
         })
     }
@@ -120,22 +85,52 @@ class PlayFragment : Fragment() {
         }
         binding.apply {
             btnAnswerIt.setOnClickListener {
-                val selectedIndex = viewModel.indexOfSelectedButton()
+                val selectedIndex = viewModel.selectedAnswerIndex()
                 val trueAnswerIndex = viewModel.trueAnswerIndex()
                 trueAnswerIndex ?: return@setOnClickListener
-                selectedIndex ?: return@setOnClickListener
+                selectedIndex ?: run {
+                    Toast.makeText(requireContext(), "sik sec", Toast.LENGTH_LONG)
+                    return@setOnClickListener
+                }
+                if (viewModel.isLastQuestion()) {
+                    btnNextQuestion.text = "TESTI BITIR"
+                } else {
+                    btnNextQuestion.text = "SONRAKI SORU"
+                }
 
+                viewModel.answeredQuestionNumber += 1
                 disableButtons()
                 //set the backgrounds
                 viewModel.answerButtons.value?.set(trueAnswerIndex, Buttons.CORRECT)
 
-                if(selectedIndex!=)
+                if (selectedIndex != trueAnswerIndex) {
+                    viewModel.answerButtons.value?.set(selectedIndex, Buttons.WRONG)
+                } else {
+                    viewModel.trueAnswerNumber += 1
+                }
+                viewModel.notifyAnswerList()
+            }
+
+            btnNextQuestion.setOnClickListener {
+                if (viewModel.isLastQuestion()) {
+                    viewModel.updateUserTestValues()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .remove(this@PlayFragment)
+                        .commit()
+                } else {
+                    viewModel.soruIndex += 1
+                    viewModel.resetButtons()
+                    viewModel.nextQuestion()
+                    btnNextQuestion.text = "PAS GEC"
+                }
+
             }
         }
     }
 
 
     private fun Button.setTypeTo(buttons: Buttons) {
+        Log.d("allah", "setTypeTo: bacin")
         this.background = when (buttons) {
             Buttons.SELECTED -> resources.getDrawable(R.drawable.clicked_button_background)
             Buttons.UNSELECTED -> resources.getDrawable(R.drawable.button_background)
@@ -149,6 +144,13 @@ class PlayFragment : Fragment() {
             it.isEnabled = false
         }
         binding.btnAnswerIt.isEnabled = false
+    }
+
+    private fun enableButtons() {
+        buttonList.forEach {
+            it.isEnabled = true
+        }
+        binding.btnAnswerIt.isEnabled = true
     }
 }
 
