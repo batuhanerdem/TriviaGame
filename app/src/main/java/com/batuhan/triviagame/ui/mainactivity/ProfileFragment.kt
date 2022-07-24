@@ -11,6 +11,9 @@ import com.batuhan.triviagame.databinding.FragmentProfileBinding
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.ui.loginactivity.LogInFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileFragmentViewModel
@@ -32,6 +35,8 @@ class ProfileFragment : Fragment() {
         val factory = ProfilfeFragmentViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(ProfileFragmentViewModel::class.java)
 
+
+
         binding.apply {
             LogInFragment.user.apply {
                 tvName.text = name
@@ -43,6 +48,13 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.getCurrentUser()
+        binding.apply {
+            LogInFragment.user.apply {
+                tvName.text = name
+                tvAnsweredQuestion.text = answeredQuestion.toString()
+                tvTrueAnsweredQuestion.text = trueAnswerNumber.toString()
+            }
+        }
     }
+
 }

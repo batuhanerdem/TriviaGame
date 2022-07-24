@@ -1,10 +1,8 @@
 package com.batuhan.triviagame.ui.mainactivity
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.Buttons
 import com.batuhan.triviagame.model.Questions
@@ -12,12 +10,14 @@ import com.batuhan.triviagame.model.User
 import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     var trueAnswerNumber = 0
     var answeredQuestionNumber = 0
-    var soruIndex = 0
+    var numberOfQuestion = 0
     private var allQuestions = mutableListOf<Questions>()
 
     private var question = MutableLiveData<Questions>()
@@ -58,9 +58,8 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
 
     // buraya bak
     fun updateUserTestValues() {
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val currentUser = repository.getUserByEmail(LogInFragment.user.eMail)//get user
-
             val user = User(
                 currentUser.name,
                 currentUser.eMail,
@@ -68,7 +67,8 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
                 currentUser.trueAnswerNumber + trueAnswerNumber
             )
             repository.update(user)// update user with new values
-            db.collection("User").document(currentUser.eMail).set(user)//update user in firebase
+
+            db.collection("User").document(currentUser.eMail).set(user)
         }
         //update user values in static variables
         LogInFragment.user.trueAnswerNumber += trueAnswerNumber
@@ -76,7 +76,6 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     fun resetButtons() {
-        Log.d("allah", "reset")
         _answerButtons.value?.clear()
         for (i in 0..3) {
             _answerButtons.value?.add(Buttons.UNSELECTED)
@@ -101,10 +100,10 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
             .takeIf { it != -1 }
 
     fun nextQuestion() {
-        question.value = allQuestions[soruIndex]
+        question.value = allQuestions[numberOfQuestion]
     }
 
-    fun isLastQuestion() = soruIndex == allQuestions.size - 1
+    fun isLastQuestion() = numberOfQuestion == allQuestions.size - 1
 
     fun notifyAnswerList() {
         _answerButtons.value = _answerButtons.value

@@ -1,6 +1,7 @@
 package com.batuhan.triviagame.ui.mainactivity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,9 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.batuhan.triviagame.R
 import com.batuhan.triviagame.databinding.FragmentPlayBinding
@@ -19,6 +21,7 @@ import com.batuhan.triviagame.db.UserDAO
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.Buttons
+import java.io.File
 
 class PlayFragment : Fragment() {
     private lateinit var binding: FragmentPlayBinding
@@ -113,12 +116,17 @@ class PlayFragment : Fragment() {
 
             btnNextQuestion.setOnClickListener {
                 if (viewModel.isLastQuestion()) {
+                    Log.d("mytag", viewModel.answeredQuestionNumber.toString())
                     viewModel.updateUserTestValues()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .remove(this@PlayFragment)
-                        .commit()
+//                    requireActivity().supportFragmentManager.beginTransaction()
+//                        .remove(this@PlayFragment)
+//                        .commit()
+                    val request =
+                        NavDeepLinkRequest.Builder.fromAction("PlayFragmentDirections.ActionPlayFragmentToProfileFragment")
+                            .build()
+                    findNavController().navigate(request)
                 } else {
-                    viewModel.soruIndex += 1
+                    viewModel.numberOfQuestion += 1
                     viewModel.resetButtons()
                     viewModel.nextQuestion()
                     btnNextQuestion.text = "PAS GEC"
@@ -130,7 +138,6 @@ class PlayFragment : Fragment() {
 
 
     private fun Button.setTypeTo(buttons: Buttons) {
-        Log.d("allah", "setTypeTo: bacin")
         this.background = when (buttons) {
             Buttons.SELECTED -> resources.getDrawable(R.drawable.clicked_button_background)
             Buttons.UNSELECTED -> resources.getDrawable(R.drawable.button_background)
