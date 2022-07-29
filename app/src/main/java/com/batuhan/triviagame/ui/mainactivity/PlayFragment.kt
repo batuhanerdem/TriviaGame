@@ -116,15 +116,17 @@ class PlayFragment : Fragment() {
 
             btnNextQuestion.setOnClickListener {
                 if (viewModel.isLastQuestion()) {
-                    Log.d("mytag", viewModel.answeredQuestionNumber.toString())
                     viewModel.updateUserTestValues()
 //                    requireActivity().supportFragmentManager.beginTransaction()
 //                        .remove(this@PlayFragment)
 //                        .commit()
-                    val request =
-                        NavDeepLinkRequest.Builder.fromAction("PlayFragmentDirections.ActionPlayFragmentToProfileFragment")
-                            .build()
-                    findNavController().navigate(request)
+
+//                    val request =
+//                        NavDeepLinkRequest.Builder.fromUri("myapp://navtriviagame.com/profilefragment".toUri())
+//                            .build()
+                    //findNavController().navigate(PlayFragmentDirections.actionPlayFragmentToProfileFragment())
+                    //findNavController().navigateUp()
+                    findNavController().popBackStack()
                 } else {
                     viewModel.numberOfQuestion += 1
                     viewModel.resetButtons()

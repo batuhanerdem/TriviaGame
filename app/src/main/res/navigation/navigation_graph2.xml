@@ -16,9 +16,9 @@
         <action
             android:id="@+id/action_profileFragment_to_playFragment"
             app:destination="@id/playFragment" />
-        <argument
-            android:name="deneme"
-            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="myapp://navtriviagame.com/profilefragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

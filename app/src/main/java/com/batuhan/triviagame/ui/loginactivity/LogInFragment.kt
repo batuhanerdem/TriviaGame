@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.ui.loginactivity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -65,6 +66,7 @@ class LogInFragment : Fragment() {
                 if (it) {
                     Intent(requireContext(), MainActivity::class.java).apply {
                         startActivity(this)
+                        activity?.finish()
                     }
                 } else {
                     Toast.makeText(requireContext(), "Basarisiz giris", Toast.LENGTH_LONG)
