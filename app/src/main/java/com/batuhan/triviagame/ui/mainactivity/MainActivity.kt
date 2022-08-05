@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.ui.mainactivity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,10 +37,13 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.background = null
 
             fab.setOnClickListener() {
-                navController.navigate(R.id.playFragment)
+                Intent(applicationContext, PlayActivity::class.java).apply {
+                    startActivity(this)
+                }
             }
         }
     }
+
     override fun onBackPressed() {
         if (backPressed) {
             super.onBackPressed()

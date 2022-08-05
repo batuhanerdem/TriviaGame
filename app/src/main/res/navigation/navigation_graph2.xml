@@ -13,9 +13,6 @@
         <action
             android:id="@+id/action_profileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_playFragment"
-            app:destination="@id/playFragment" />
         <deepLink
             android:id="@+id/deepLink"
             app:uri="myapp://navtriviagame.com/profilefragment" />
@@ -28,21 +25,5 @@
         <action
             android:id="@+id/action_settingsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_playFragment"
-            app:destination="@id/playFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/playFragment"
-        android:name="com.batuhan.triviagame.ui.mainactivity.PlayFragment"
-        android:label="fragment_play"
-        tools:layout="@layout/fragment_play">
-        <action
-            android:id="@+id/action_playFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
-            />
-        <action
-            android:id="@+id/action_playFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
     </fragment>
 </navigation>
