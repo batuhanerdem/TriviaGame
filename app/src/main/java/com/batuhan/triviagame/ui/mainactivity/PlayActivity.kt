@@ -71,12 +71,13 @@ class PlayActivity : AppCompatActivity() {
             }
         }
         binding.apply {
+            tvPoint.text = "0"
             btnAnswerIt.setOnClickListener {
                 val selectedIndex = viewModel.selectedAnswerIndex()
                 val trueAnswerIndex = viewModel.trueAnswerIndex()
                 trueAnswerIndex ?: return@setOnClickListener
                 selectedIndex ?: run {
-                    Toast.makeText(this@PlayActivity, "sik sec", Toast.LENGTH_LONG)
+                    Toast.makeText(this@PlayActivity, "sik sec", Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
                 if (viewModel.isLastQuestion()) {
@@ -94,6 +95,7 @@ class PlayActivity : AppCompatActivity() {
                     viewModel.answerButtons.value?.set(selectedIndex, Buttons.WRONG)
                 } else {
                     viewModel.trueAnswerNumber += 1
+                    tvPoint.text = viewModel.trueAnswerNumber.toString()
                 }
                 viewModel.notifyAnswerList()
             }
