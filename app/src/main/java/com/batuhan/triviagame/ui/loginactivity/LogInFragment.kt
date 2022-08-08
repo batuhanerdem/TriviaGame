@@ -53,6 +53,10 @@ class LogInFragment : Fragment() {
             }
 
             buttonGirisYap.setOnClickListener {
+                Intent(requireContext(), MainActivity::class.java).apply {
+                    startActivity(this)
+                    activity?.finish()
+                }
                 val username = editTextEmail.text.toString()
                 val password = editTextPassword.text.toString()
 
