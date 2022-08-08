@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF004C69"
+    android:background="#8CADC3"
     tools:context=".ui.loginactivity.LogInFragment">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
         android:text="Kayit ol"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,8 +27,8 @@
         android:ems="10"
         android:hint="E-mailinizi giriniz"
         android:inputType="textEmailAddress"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
         android:ems="10"
         android:hint="Sifrenizi giriniz"
         android:inputType="textPassword"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/editTextEmail"
         app:layout_constraintStart_toStartOf="@+id/editTextEmail"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
@@ -51,9 +51,10 @@
         android:layout_width="180dp"
         android:layout_height="40dp"
         android:layout_marginTop="40dp"
-        android:backgroundTint="@color/white"
+        android:background="@drawable/wrong_answer_button_background"
+        android:backgroundTintMode="add"
         android:text="Giris"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
