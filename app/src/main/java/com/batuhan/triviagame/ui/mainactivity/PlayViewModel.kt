@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     var trueAnswerNumber = 0
     var answeredQuestionNumber = 0
-    var numberOfQuestion = 0
+    var indexOfQuestion = 0
     private var allQuestions = mutableListOf<Questions>()
 
     private var question = MutableLiveData<Questions>()
@@ -100,10 +100,10 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
             .takeIf { it != -1 }
 
     fun nextQuestion() {
-        question.value = allQuestions[numberOfQuestion]
+        question.value = allQuestions[indexOfQuestion]
     }
 
-    fun isLastQuestion() = numberOfQuestion == allQuestions.size - 1
+    fun isLastQuestion() = indexOfQuestion == allQuestions.size - 1
 
     fun notifyAnswerList() {
         _answerButtons.value = _answerButtons.value
