@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener() {
                 Intent(applicationContext, PlayActivity::class.java).apply {
                     startActivity(this)
+                    finish()
                 }
             }
         }

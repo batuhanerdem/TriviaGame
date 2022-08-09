@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.ui.mainactivity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -103,7 +104,7 @@ class PlayActivity : AppCompatActivity() {
             btnNextQuestion.setOnClickListener {
                 if (viewModel.isLastQuestion()) {
                     viewModel.updateUserTestValues()
-                    this@PlayActivity.finish()
+                    backToProfile()
                 } else {
                     viewModel.indexOfQuestion += 1
                     viewModel.resetButtons()
@@ -138,5 +139,15 @@ class PlayActivity : AppCompatActivity() {
             it.isEnabled = true
         }
         binding.btnAnswerIt.isEnabled = true
+    }
+
+    private fun backToProfile() {
+        val myIntent = Intent(this@PlayActivity, MainActivity::class.java)
+        startActivity(myIntent)
+        this@PlayActivity.finish()
+    }
+
+    override fun onBackPressed() {
+        backToProfile()
     }
 }
