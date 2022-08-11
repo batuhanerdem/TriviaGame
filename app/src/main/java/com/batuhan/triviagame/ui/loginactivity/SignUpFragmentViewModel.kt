@@ -23,25 +23,27 @@ class SignUpFragmentViewModel(private val repository: UserRepository) : ViewMode
 
     fun createAccount(
         e_mail: String,
-        password: String
+        password: String,
+        name: String
     ) {
-        if (e_mail.isNotEmpty() && password.isNotEmpty()){
+        if (e_mail.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty()) {
             auth.createUserWithEmailAndPassword(e_mail, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     isSignUp.value = true
-                    saveUserToFirestore(e_mail)
+                    saveUserToFirestore(e_mail, name)
                 }
             }.addOnFailureListener { e ->
                 isSignUp.value = false
                 exception.value = e.localizedMessage as String
             }
-        }else{
+        } else {
             exception.value = "Lutfen bir deger giriniz"
         }
     }
-    private fun saveUserToFirestore(e_mail: String){
+
+    private fun saveUserToFirestore(e_mail: String, name: String) {
         val userMap = hashMapOf(
-            "name" to e_mail,
+            "name" to name,
             "email" to e_mail,
             "answeredQuestion" to 0,
             "trueAnswerNumber" to 0

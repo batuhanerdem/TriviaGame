@@ -72,17 +72,17 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
         }
     }
 
-    fun deleteUser(user: User) {
-        viewModelScope.launch {
-            repository.delete(user)
-        }
-    }
+//    fun deleteUser(user: User) {
+//        viewModelScope.launch {
+//            repository.delete(user)
+//        }
+//    }
 
-    fun clearDatabase() {
-        viewModelScope.launch {
-            repository.clearDatabase()
-        }
-    }
+//    fun clearDatabase() {
+//        viewModelScope.launch {
+//            repository.clearDatabase()
+//        }
+//    }
 
     suspend fun insertIfNotExist(
         currentUser: User

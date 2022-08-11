@@ -24,6 +24,9 @@
         <entry key="..\:/Users/batuh/AndroidStudioProjects/TriviaGame/app/src/main/res/menu/navigation_menu.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/drawable/button_background.xml" value="0.214" />
         <entry key="app/src/main/res/drawable/github_image_smaller.xml" value="0.1985" />
+        <entry key="app/src/main/res/drawable/highscore_background.xml" value="0.214" />
+        <entry key="app/src/main/res/drawable/highscore_list_background.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/profile_tv_background.xml" value="0.1475" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.340625" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3353846153846154" />
         <entry key="app/src/main/res/layout/activity_play.xml" value="0.340625" />

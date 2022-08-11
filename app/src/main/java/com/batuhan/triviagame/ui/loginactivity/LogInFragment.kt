@@ -26,14 +26,15 @@ class LogInFragment : Fragment() {
     private lateinit var binding: FragmentLogInBinding
 
     companion object {
-        var user = User("","",0,0)
+        var user = User("", "", 0, 0)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_log_in, container, false)
+        binding = FragmentLogInBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,10 +44,23 @@ class LogInFragment : Fragment() {
         val factory = LoginFragmentViewModelFactory(repository)
 
         viewModel = ViewModelProvider(this, factory).get(LoginFragmentViewModel::class.java)
-        binding = FragmentLogInBinding.bind(view)
+        setupOnClickListeners()
 
+    }
+
+    private fun setupOnClickListeners() {
+        viewModel.getIsSignIn().observe(viewLifecycleOwner, Observer {
+            if (it) {
+                Intent(requireContext(), MainActivity::class.java).apply {
+                    startActivity(this)
+                    activity?.finish()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Basarisiz giris", Toast.LENGTH_LONG)
+                    .show()
+            }
+        })
         binding.apply {
-
             textViewKayitOl.setOnClickListener() {
                 val action = LogInFragmentDirections.actionLogInFragmentToSignUpFragment()
                 it.findNavController().navigate(action)
@@ -56,23 +70,8 @@ class LogInFragment : Fragment() {
                 val username = editTextEmail.text.toString()
                 val password = editTextPassword.text.toString()
 
-                if (username == "delete") {
-                    viewModel.clearDatabase()
-                    Toast.makeText(context, "Database temizlendi", Toast.LENGTH_LONG)
-                }
                 viewModel.signIn(username, password)
             }
-            viewModel.getIsSignIn().observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    Intent(requireContext(), MainActivity::class.java).apply {
-                        startActivity(this)
-                        activity?.finish()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Basarisiz giris", Toast.LENGTH_LONG)
-                        .show()
-                }
-            })
         }
     }
 }

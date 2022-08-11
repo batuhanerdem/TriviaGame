@@ -26,7 +26,7 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSignUpBinding.inflate( inflater,container, false)
+        binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -35,13 +35,14 @@ class SignUpFragment : Fragment() {
         val dao = UserDatabase.getInstance(requireContext()).userDAO
         val repository = UserRepository(dao)
         factory = SignUpFragmentViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,factory).get(SignUpFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory).get(SignUpFragmentViewModel::class.java)
 
         binding.apply {
-            buttonKayitOlFragment.setOnClickListener {
+            buttonSignUp.setOnClickListener {
                 val email = editTextEmail.text.toString()
                 val password = editTextPassword.text.toString()
-                viewModel.createAccount(email, password)
+                val name = editTextName.text.toString()
+                viewModel.createAccount(email, password, name)
                 viewModel.getException().observe(viewLifecycleOwner, Observer {
                     Toast.makeText(context, it, Toast.LENGTH_LONG).show()
                 })
