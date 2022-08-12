@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.ui.mainactivity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,9 +11,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.batuhan.triviagame.databinding.FragmentSettingsBinding
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
+import com.batuhan.triviagame.ui.loginactivity.LogInActivity
 
 class SettingsFragment : Fragment() {
     lateinit var viewModel: SettingsFragmentViewModel
@@ -32,6 +35,7 @@ class SettingsFragment : Fragment() {
         val repository = UserRepository(dao)
         val factory = SettingsFragmentViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(SettingsFragmentViewModel::class.java)
+        setObserver()
         setOnClickListeners()
 
     }
@@ -60,11 +64,14 @@ class SettingsFragment : Fragment() {
                 tvNameChange.visibility = INVISIBLE
                 btnNameChangeTest.visibility = INVISIBLE
             }
+            btnLogOut.setOnClickListener {
+                val myIntent = Intent(requireContext(), LogInActivity::class.java)
+                startActivity(myIntent)
+            }
         }
     }
 
     private fun changeName(newName: String) {
         viewModel.changeName(newName)
-        setObserver()
     }
 }

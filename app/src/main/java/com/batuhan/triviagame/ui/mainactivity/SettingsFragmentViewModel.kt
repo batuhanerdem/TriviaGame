@@ -10,12 +10,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class SettingsFragmentViewModel(val repository: UserRepository) : ViewModel() {
-    lateinit var nameChangeLiveData: MutableLiveData<Boolean>
+    var nameChangeLiveData = MutableLiveData<Boolean>()
     val db = FirebaseFirestore.getInstance()
 
     fun changeName(newName: String) {
-        nameChangeLiveData = MutableLiveData()
-        nameChangeLiveData.value = false
         val currentUserEMail = LogInFragment.user.eMail
         viewModelScope.launch {
             changeNameLocal(currentUserEMail, newName)
