@@ -60,7 +60,7 @@ class SettingsFragment : Fragment() {
             }
             btnNameChangeTest.setOnClickListener {
                 val newName = tvNameChange.text.toString()
-                changeName(newName)
+                viewModel.changeName(newName)
                 tvNameChange.visibility = INVISIBLE
                 btnNameChangeTest.visibility = INVISIBLE
             }
@@ -69,9 +69,5 @@ class SettingsFragment : Fragment() {
                 startActivity(myIntent)
             }
         }
-    }
-
-    private fun changeName(newName: String) {
-        viewModel.changeName(newName)
     }
 }
