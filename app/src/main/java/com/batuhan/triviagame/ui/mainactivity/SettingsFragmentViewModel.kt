@@ -34,7 +34,7 @@ class SettingsFragmentViewModel(val repository: UserRepository) : ViewModel() {
     }
 
     private fun changeNameFirebase(currentUserEMail: String, newName: String) {
-        db.collection("User").document(currentUserEMail.toString()).update("name", newName)
+        db.collection("User").document(currentUserEMail).update("name", newName)
             .addOnCompleteListener {
                 nameChangeLiveData.value = true
             }
