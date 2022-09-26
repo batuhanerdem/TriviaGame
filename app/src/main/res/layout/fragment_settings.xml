@@ -14,46 +14,10 @@
         android:layout_marginHorizontal="40dp"
         android:layout_marginBottom="120dp"
         android:backgroundTint="#4D7FA6"
+        android:drawableStart="@drawable/ic_twotone_exit_to_app_24"
+        android:drawablePadding="-30dp"
         android:text="Cikis yap"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:hint="Isminizi giriniz."
-        android:id="@+id/tvNameChange"
-        android:layout_width="match_parent"
-        android:visibility="invisible"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="50dp"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnChangeName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="deneme" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnNameChangeTest"
-        android:text="Onayla"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/btnChangeName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameChange" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnChangeName"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="120dp"
-        android:backgroundTint="#4D7FA6"
-        android:text="Ismini degistir"
-        app:layout_constraintBottom_toBottomOf="@id/btnGitHub"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -68,6 +32,45 @@
         android:drawablePadding="-40dp"
         android:text="github"
         app:layout_constraintBottom_toTopOf="@id/btnLogOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <EditText
+        android:id="@+id/tvNameChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:hint="Isminizi giriniz."
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnChangeName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="deneme" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNameChangeTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Onayla"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnChangeName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameChange" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnChangeName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="120dp"
+        android:backgroundTint="#4D7FA6"
+        android:text="Ismini degistir"
+        app:layout_constraintBottom_toBottomOf="@id/btnGitHub"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

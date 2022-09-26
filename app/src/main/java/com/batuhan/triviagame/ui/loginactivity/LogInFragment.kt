@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment.STYLE_NO_FRAME
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -19,6 +20,9 @@ import com.batuhan.triviagame.db.UserRepository
 import com.batuhan.triviagame.model.User
 import com.batuhan.triviagame.ui.mainactivity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 //FF004C69
 class LogInFragment : Fragment() {
@@ -44,6 +48,13 @@ class LogInFragment : Fragment() {
         val factory = LoginFragmentViewModelFactory(repository)
 
         viewModel = ViewModelProvider(this, factory).get(LoginFragmentViewModel::class.java)
+            CoroutineScope(Dispatchers.IO).launch {
+                val allUsers = repository.getAllUsers()
+                if (allUsers.isNotEmpty()) {
+                    val dialog = CustomDialogFragment(allUsers)
+                    dialog.show(parentFragmentManager, "customDialog")
+                }
+            }
         setupOnClickListeners()
 
     }

@@ -84,7 +84,7 @@
         android:id="@+id/highScoreTv"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/highscore_background"
+        android:background="@drawable/clicked_button_background"
         android:text="Highscore"
         android:textAlignment="center"
         android:textColor="@color/black"

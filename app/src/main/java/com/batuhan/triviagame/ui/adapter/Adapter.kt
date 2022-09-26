@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.batuhan.triviagame.databinding.HighscoreRecyclerItemBinding
 import com.batuhan.triviagame.model.User
 
-class Adapter(private var highScoreList: List<User>) : RecyclerView.Adapter<Adapter.VHMainList>() {
+class Adapter(private val highScoreList: List<User>) : RecyclerView.Adapter<Adapter.VHMainList>() {
 
     class VHMainList(val binding: HighscoreRecyclerItemBinding) :
         RecyclerView.ViewHolder(binding.root)

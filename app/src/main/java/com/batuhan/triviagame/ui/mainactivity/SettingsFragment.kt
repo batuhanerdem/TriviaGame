@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.batuhan.triviagame.databinding.FragmentSettingsBinding
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
@@ -41,6 +40,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setObserver() {
+        println(viewModel.nameChangeLiveData.value)
         viewModel.nameChangeLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
                 Toast.makeText(
@@ -48,7 +48,9 @@ class SettingsFragment : Fragment() {
                     "Isminiz basariyla degistirildi",
                     Toast.LENGTH_LONG
                 ).show()
+                viewModel.nameChangeLiveData.value = false
             }
+
         })
     }
 

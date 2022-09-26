@@ -78,7 +78,7 @@ class PlayActivity : AppCompatActivity() {
                 val trueAnswerIndex = viewModel.trueAnswerIndex()
                 trueAnswerIndex ?: return@setOnClickListener
                 selectedIndex ?: run {
-                    Toast.makeText(this@PlayActivity, "sik sec", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@PlayActivity, "lutfen bir sik seciniz", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 if (viewModel.isLastQuestion()) {

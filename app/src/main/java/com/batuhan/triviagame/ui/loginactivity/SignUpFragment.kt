@@ -1,5 +1,6 @@
 package com.batuhan.triviagame.ui.loginactivity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.batuhan.triviagame.databinding.FragmentSignUpBinding
 import com.batuhan.triviagame.db.UserDAO
 import com.batuhan.triviagame.db.UserDatabase
 import com.batuhan.triviagame.db.UserRepository
+import com.batuhan.triviagame.ui.mainactivity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SignUpFragment : Fragment() {
@@ -49,9 +51,10 @@ class SignUpFragment : Fragment() {
                 viewModel.getIsSignUp().observe(viewLifecycleOwner, Observer {
                     if (it) {
                         Toast.makeText(context, "Basariyla kayit olundu", Toast.LENGTH_SHORT).show()
-
-                        val action = SignUpFragmentDirections.actionSignUpFragmentToLogInFragment()
-                        Navigation.findNavController(view).navigate(action)
+                        LogInFragment.user = viewModel.newUser
+                        Intent(requireContext(),MainActivity::class.java).apply {
+                            startActivity(this)
+                        }
                     }
                 })
             }

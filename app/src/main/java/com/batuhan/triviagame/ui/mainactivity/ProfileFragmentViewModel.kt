@@ -14,7 +14,7 @@ class ProfileFragmentViewModel(private val repository: UserRepository) : ViewMod
     fun getHighscoreTable() {
         highScoreList.value = mutableListOf()
         db.collection("User").orderBy("trueAnswerNumber", Query.Direction.DESCENDING).limit(3)
-            .addSnapshotListener { value, error ->
+            .addSnapshotListener { value, _ ->
                 value?.let {
                     highScoreList.value!!.clear()
                     for (i in 0..2) {

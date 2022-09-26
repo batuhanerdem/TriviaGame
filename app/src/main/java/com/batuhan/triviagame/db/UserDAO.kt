@@ -1,6 +1,5 @@
 package com.batuhan.triviagame.db
 
-import android.provider.ContactsContract
 import androidx.room.*
 import com.batuhan.triviagame.model.User
 
