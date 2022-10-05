@@ -15,11 +15,14 @@ class SettingsFragmentViewModel(val repository: UserRepository) : ViewModel() {
 
     fun changeName(newName: String) {
         val currentUserEMail = LogInFragment.user.eMail
-        viewModelScope.launch {
-            changeNameLocal(currentUserEMail, newName)
-        }
-        changeNameStaticUser(newName)
-        changeNameFirebase(currentUserEMail, newName)
+        db.collection("User").document(currentUserEMail).update("name", newName)
+            .addOnCompleteListener {
+                nameChangeLiveData.value = true
+                viewModelScope.launch {
+                    changeNameLocal(currentUserEMail, newName)
+                }
+                changeNameStaticUser(newName)
+            }
     }
 
     private suspend fun changeNameLocal(currentUserEMail: String, newName: String) {
@@ -31,13 +34,6 @@ class SettingsFragmentViewModel(val repository: UserRepository) : ViewModel() {
             currentUser.trueAnswerNumber
         )
         repository.update(updatedUser)
-    }
-
-    private fun changeNameFirebase(currentUserEMail: String, newName: String) {
-        db.collection("User").document(currentUserEMail).update("name", newName)
-            .addOnCompleteListener {
-                nameChangeLiveData.value = true
-            }
     }
 
     private fun changeNameStaticUser(newName: String) {

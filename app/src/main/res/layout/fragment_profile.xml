@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9FA8DA"
+    android:background="#F5EFE6"
     tools:context=".ui.mainactivity.ProfileFragment">
 
 
@@ -85,7 +85,7 @@
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:background="@drawable/highscore_list_background"
-        android:text="Highscore"
+        android:text="En Iyiler"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="25sp"
@@ -100,5 +100,7 @@
         android:layout_marginHorizontal="70dp"
         android:background="@drawable/highscore_list_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTrueAnsweredQuestion" />
+        app:layout_constraintTop_toBottomOf="@id/tvTrueAnsweredQuestion"
+        app:layout_constraintVertical_bias="0.503"
+        tools:layout_editor_absoluteX="70dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

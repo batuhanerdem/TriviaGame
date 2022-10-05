@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#5961B1"
+    android:background="#F5EFE6"
     android:layout_height="match_parent">
 
 
@@ -66,6 +66,7 @@
         android:id="@+id/btnAnswerIt"
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:background="#E8DFCA"
         android:text="Yanitla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btnAnswer4"
@@ -75,6 +76,7 @@
         android:id="@+id/btnNextQuestion"
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:background="#E8DFCA"
         android:text="Pas gec"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btnAnswer4"

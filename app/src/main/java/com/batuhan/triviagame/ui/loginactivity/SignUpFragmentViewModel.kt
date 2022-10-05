@@ -64,11 +64,11 @@ class SignUpFragmentViewModel(private val repository: UserRepository) : ViewMode
 
     private fun saveToLocal() {
         viewModelScope.launch {
-            insertIfNotExist(newUser)
+            insertOrUpdate(newUser)
         }
     }
 
-    private suspend fun insertIfNotExist(
+    private suspend fun insertOrUpdate(
         currentUser: User
     ) {
         val allUsers = repository.getAllUsers()

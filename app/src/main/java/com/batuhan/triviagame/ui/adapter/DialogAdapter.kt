@@ -1,15 +1,13 @@
 package com.batuhan.triviagame.ui.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.batuhan.triviagame.databinding.UserlistRecyclerItemBinding
 import com.batuhan.triviagame.model.User
 import com.batuhan.triviagame.ui.loginactivity.LogInFragment
-import com.batuhan.triviagame.ui.mainactivity.MainActivity
 
-class DialogAdapter(private val userList: List<User>) :
+class DialogAdapter(private val userList: List<User>, private val goActivity: () -> Unit) :
     RecyclerView.Adapter<DialogAdapter.VHMainList>() {
     class VHMainList(val binding: UserlistRecyclerItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -24,8 +22,7 @@ class DialogAdapter(private val userList: List<User>) :
         holder.binding.userEmail.text = userList[position].eMail
         holder.binding.userEmail.setOnClickListener {
             LogInFragment.user = userList[position]
-            val myIntent = Intent(it.context, MainActivity::class.java)
-            it.context.startActivity(myIntent)
+            goActivity()
         }
     }
 

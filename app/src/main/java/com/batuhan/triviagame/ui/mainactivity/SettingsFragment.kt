@@ -1,6 +1,7 @@
 package com.batuhan.triviagame.ui.mainactivity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -40,7 +41,6 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setObserver() {
-        println(viewModel.nameChangeLiveData.value)
         viewModel.nameChangeLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
                 Toast.makeText(
@@ -70,6 +70,15 @@ class SettingsFragment : Fragment() {
                 val myIntent = Intent(requireContext(), LogInActivity::class.java)
                 startActivity(myIntent)
             }
+            btnGitHub.setOnClickListener {
+                goToMyGithub()
+            }
         }
+    }
+
+    private fun goToMyGithub() {
+        val uriUrl = Uri.parse("https://www.github.com/batuhanerdem")
+        val launchBrowser = Intent(Intent.ACTION_VIEW, uriUrl)
+        startActivity(launchBrowser)
     }
 }

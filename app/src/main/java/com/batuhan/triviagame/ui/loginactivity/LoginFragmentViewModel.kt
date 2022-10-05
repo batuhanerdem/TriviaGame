@@ -23,6 +23,7 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
         e_mail: String,
         password: String
     ) {
+        //db.app.setDataCollectionDefaultEnabled(false)
         if (e_mail.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(e_mail, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -30,21 +31,21 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
                     userRef.get().addOnSuccessListener { document ->
                         if (document != null) {
                             val name = document.get("name") as String
-                            val e_mail = document.get("email") as String
+                            val eMail = document.get("email") as String
                             val answeredQuestion = document.get("answeredQuestion") as Long
                             val trueAnswerNumber = document.get("trueAnswerNumber") as Long
                             val user = User(
                                 name,
-                                e_mail,
+                                eMail,
                                 answeredQuestion.toInt(),
                                 trueAnswerNumber.toInt()
                             )
                             viewModelScope.launch {
-                                insertIfNotExist(user)
+                                insertOrUpdate(user)
                             }
                             LogInFragment.user = User(
                                 name,
-                                e_mail,
+                                eMail,
                                 answeredQuestion.toInt(),
                                 trueAnswerNumber.toInt()
                             )
@@ -72,7 +73,7 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
         }
     }
 
-    private suspend fun insertIfNotExist(
+    private suspend fun insertOrUpdate(
         currentUser: User
     ) {
         val allUsers = repository.getAllUsers()
@@ -83,10 +84,6 @@ class LoginFragmentViewModel(private val repository: UserRepository) : ViewModel
                 insertGate = false
             }
         }
-        if (insertGate) {
-            insertUser(currentUser)
-        } else {
-            updateUser(currentUser)
-        }
+        if (insertGate) insertUser(currentUser) else updateUser(currentUser)
     }
 }

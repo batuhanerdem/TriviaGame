@@ -10,6 +10,7 @@ import com.batuhan.triviagame.model.User
 import com.batuhan.triviagame.ui.loginactivity.LogInFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,28 +33,29 @@ class PlayViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     fun getDatabase() {
-        db.collection("Play").addSnapshotListener { snapshot, e ->
-            if (e == null) {
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val allDocuments = snapshot.documents as ArrayList<DocumentSnapshot>
+        db.collection("Play")
+            .orderBy("Uid", Query.Direction.ASCENDING).addSnapshotListener { snapshot, e ->
+                if (e == null) {
+                    if (snapshot != null && !snapshot.isEmpty) {
+                        val allDocuments = snapshot.documents as ArrayList<DocumentSnapshot>
 
-                    for (index in 0..9) {
-                        val text = allDocuments[index].get("Question") as String
-                        val answerA = allDocuments[index].get("AnswerA") as String
-                        val answerB = allDocuments[index].get("AnswerB") as String
-                        val answerC = allDocuments[index].get("AnswerC") as String
-                        val answerD = allDocuments[index].get("AnswerD") as String
-                        val trueAnswer = allDocuments[index].get("TrueAnswer") as String
-                        val uuid = allDocuments[index].get("Uid") as Long
-                        val answerList = listOf(answerA, answerB, answerC, answerD)
-                        allQuestions.add(
-                            Questions(text, answerList, trueAnswer, uuid.toInt())
-                        )
+                        for (index in 0..9) {
+                            val text = allDocuments[index].get("Question") as String
+                            val answerA = allDocuments[index].get("AnswerA") as String
+                            val answerB = allDocuments[index].get("AnswerB") as String
+                            val answerC = allDocuments[index].get("AnswerC") as String
+                            val answerD = allDocuments[index].get("AnswerD") as String
+                            val trueAnswer = allDocuments[index].get("TrueAnswer") as String
+                            val uuid = allDocuments[index].get("Uid") as Long
+                            val answerList = listOf(answerA, answerB, answerC, answerD)
+                            allQuestions.add(
+                                Questions(text, answerList, trueAnswer, uuid.toInt())
+                            )
+                        }
+                        nextQuestion()
                     }
-                    nextQuestion()
                 }
             }
-        }
     }
 
     // buraya bak

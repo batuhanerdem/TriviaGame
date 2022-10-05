@@ -11,23 +11,32 @@ class ProfileFragmentViewModel(private val repository: UserRepository) : ViewMod
     val db = FirebaseFirestore.getInstance()
     var highScoreList = MutableLiveData<MutableList<User>>()
 
+
     fun getHighscoreTable() {
         highScoreList.value = mutableListOf()
-        db.collection("User").orderBy("trueAnswerNumber", Query.Direction.DESCENDING).limit(3)
-            .addSnapshotListener { value, _ ->
+        db.collection("User").orderBy("trueAnswerNumber", Query.Direction.DESCENDING)
+            .addSnapshotListener { value, error ->
                 value?.let {
                     highScoreList.value!!.clear()
-                    for (i in 0..2) {
-                        val newUser = User(
-                            it.documents[i]["name"].toString(),
-                            it.documents[i]["email"].toString(),
-                            it.documents[i]["answeredQuestion"].toString().toInt(),
-                            it.documents[i]["trueAnswerNumber"].toString().toInt(),
-                        )
-                        highScoreList.value!!.add(newUser)
+                    for (i in 0 until value.documents.size) {
+                        if (it.documents[i]["trueAnswerNumber"].toString().toInt() > 0) {
+                            //println(it.documents[i]["name"].toString())
+                            val newUser = User(
+                                it.documents[i]["name"].toString(),
+                                it.documents[i]["email"].toString(),
+                                it.documents[i]["answeredQuestion"].toString().toInt(),
+                                it.documents[i]["trueAnswerNumber"].toString().toInt(),
+                            )
+                            highScoreList.value!!.add(newUser)
+                        }
                     }
                     highScoreList.value = highScoreList.value
                 }
             }
+    }
+
+    fun getUser() {
+        //db.collection("User").document().
+
     }
 }

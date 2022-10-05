@@ -36,6 +36,7 @@ class PlayActivity : AppCompatActivity() {
             binding.btnAnswer3,
             binding.btnAnswer4
         )
+        disableAllButtons()
         setQuestions()
         setAnswers()
         viewModel.getDatabase()
@@ -46,7 +47,8 @@ class PlayActivity : AppCompatActivity() {
     private fun setQuestions() {
         viewModel.getQuestions().observe(this, Observer {
             viewModel.resetButtons()
-            enableButtons()
+            //enableButtons()
+            enableAllButtons()
             binding.apply {
                 tvQuestion.text = it.text
                 for ((index, button) in buttonList.withIndex()) {
@@ -78,7 +80,8 @@ class PlayActivity : AppCompatActivity() {
                 val trueAnswerIndex = viewModel.trueAnswerIndex()
                 trueAnswerIndex ?: return@setOnClickListener
                 selectedIndex ?: run {
-                    Toast.makeText(this@PlayActivity, "lutfen bir sik seciniz", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PlayActivity, "lutfen bir sik seciniz", Toast.LENGTH_SHORT)
+                        .show()
                     return@setOnClickListener
                 }
                 if (viewModel.isLastQuestion()) {
@@ -149,5 +152,15 @@ class PlayActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         backToProfile()
+    }
+
+    private fun disableAllButtons() {
+        disableButtons()
+        binding.btnNextQuestion.isEnabled = false
+    }
+
+    private fun enableAllButtons() {
+        enableButtons()
+        binding.btnNextQuestion.isEnabled = true
     }
 }
