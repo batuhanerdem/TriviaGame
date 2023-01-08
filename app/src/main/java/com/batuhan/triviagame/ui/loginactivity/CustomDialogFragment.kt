@@ -47,6 +47,7 @@ class CustomDialogFragment(private val userList: List<User>) : DialogFragment() 
         adapter = DialogAdapter(userList) {
             val myIntent = Intent(requireContext(), MainActivity::class.java)
             startActivity(myIntent)
+            activity?.finish()
         }
         binding.accountRecycler.adapter = adapter
         binding.accountRecycler.layoutManager = LinearLayoutManager(requireContext())
