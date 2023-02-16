@@ -18,6 +18,8 @@ View binding
 
 Dialog Fragment
 
+Bottom nav bar
+
 # Pictures
 <img src="/images/1.PNG"/>
 <img src="/images/2.PNG"/>
